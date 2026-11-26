@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>The Neighbor Is Not the Enemy</title>
-<meta name="description" content="A five-minute film about AI, power, and where the anger belongs. Best with sound.">
+<meta name="description" content="A six-minute film about AI, power, and where the anger belongs. Best with sound.">
 <meta name="theme-color" content="#09090b">
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Neighbor Is Not the Enemy">
-<meta property="og:description" content="A five-minute film about AI, power, and where the anger belongs. Best with sound.">
+<meta property="og:description" content="A six-minute film about AI, power, and where the anger belongs. Best with sound.">
 <meta property="og:image" content="https://brok3nby-design.github.io/Neighbor/preview.jpg">
 <meta property="og:url" content="https://brok3nby-design.github.io/Neighbor/">
 <meta name="twitter:card" content="summary_large_image">
@@ -75,8 +75,8 @@ button{font:inherit}
 
 /* Scene text */
 #text{position:absolute;inset:0;pointer-events:none}
-.st{position:absolute;inset:0;display:flex;flex-direction:column;gap:clamp(14px,2.2vh,30px);padding:var(--top) var(--gr) var(--bot) var(--gl);transition:opacity .8s ease, filter .8s ease}
-.st.gone{opacity:0;filter:blur(8px)}
+.st{position:absolute;inset:0;display:flex;flex-direction:column;gap:clamp(14px,2.2vh,30px);padding:var(--top) var(--gr) var(--bot) var(--gl);transition:opacity 1s ease, transform 1.2s ease, filter 1s ease}
+.st.gone{opacity:0;transform:translateY(-12px);filter:blur(4px)}
 .l-bottom{justify-content:flex-end}
 .l-top{justify-content:flex-start}
 .l-center{justify-content:center}
@@ -85,9 +85,15 @@ button{font:inherit}
 .l-quote{justify-content:center;color:var(--amber-ink)}
 .l-quote em{color:var(--amber-ink)}
 .blk{max-width:100%}
-.w{display:inline-block;opacity:0;transform:translateY(.32em);filter:blur(10px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform 1.1s cubic-bezier(.2,.7,.2,1),filter 1s ease;transition-delay:calc(var(--i) * var(--stg,42ms))}
-.show .w{opacity:1;transform:none;filter:blur(0)}
-.fade{opacity:0;transform:translateY(14px);transition:opacity 1s ease .1s, transform 1.2s cubic-bezier(.2,.7,.2,1) .1s}
+.w{display:inline-block;opacity:0;transform:translateY(.22em);transition:opacity 1.6s cubic-bezier(.4,0,.3,1),transform 1.9s cubic-bezier(.22,.6,.2,1);transition-delay:calc(var(--i) * var(--stg,55ms))}
+.show .w{opacity:1;transform:none}
+.t-st,.t-hero{--stg:85ms}
+.t-lead,.t-head,.big{--stg:55ms}
+.t-body,.it,.tk{--stg:24ms}
+em .w{text-shadow:0 0 26px rgba(240,169,63,.85);transition-property:opacity,transform,text-shadow;transition-duration:1.6s,1.9s,3.2s}
+.show em .w{text-shadow:0 0 0 rgba(240,169,63,0)}
+.l-quote em .w{text-shadow:none}
+.fade{opacity:0;transform:translateY(14px);transition:opacity 1.6s cubic-bezier(.4,0,.3,1) .1s, transform 1.8s cubic-bezier(.22,.6,.2,1) .1s}
 .show .fade{opacity:1;transform:none}
 p,h1,h2{margin:0}
 em{font-style:italic;color:var(--lamp)}
@@ -120,16 +126,30 @@ em{font-style:italic;color:var(--lamp)}
 .lr.hd .lc{border-top:0;padding-bottom:.6em}
 .lr:last-child .lc{border-bottom:1px solid var(--line)}
 .lk{font-family:var(--mono);font-size:clamp(10px,.82vw,14px);letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding-top:calc(clamp(10px,1.9vh,24px) + .5em)}
-.lt{font-size:clamp(15px,1.3vw,24px);line-height:1.4;color:var(--ash);text-decoration:line-through;text-decoration-color:transparent;text-decoration-thickness:1px;transition:text-decoration-color .7s ease, color .7s ease}
-.flip .lt{text-decoration-color:rgba(183,175,161,.85);color:var(--mute)}
-.ln{font-family:var(--serif);font-size:clamp(19px,1.9vw,36px);line-height:1.15;color:var(--lamp-hi);opacity:0;transform:translateX(-14px);filter:blur(6px);transition:opacity .8s ease .15s, transform 1s cubic-bezier(.2,.7,.2,1) .15s, filter .8s ease .15s}
-.flip .ln{opacity:1;transform:none;filter:none}
+.lr .lc{transition:opacity 1.2s cubic-bezier(.4,0,.3,1), transform 1.4s cubic-bezier(.22,.6,.2,1), color 1s ease}
+.lr.pend .lc{opacity:0;transform:translateY(12px)}
+.lt{font-size:clamp(15px,1.3vw,24px);line-height:1.4;color:var(--ash)}
+.lt span{background-image:linear-gradient(rgba(183,175,161,.9),rgba(183,175,161,.9));background-repeat:no-repeat;background-size:0% 1.5px;background-position:0 58%;transition:background-size 1.4s cubic-bezier(.65,0,.35,1)}
+.lr.cur .lk{color:var(--lamp)}
+.lr.cur .lt{color:var(--ink)}
+.lr.struck .lt{color:var(--mute)}
+.lr.struck .lt span{background-size:100% 1.5px}
+.ln{font-family:var(--serif);font-size:clamp(19px,1.9vw,36px);line-height:1.15;color:var(--lamp-hi)}
+.lr .ln{opacity:0;transform:translateX(-12px)}
+.lr.done .ln{opacity:1;transform:none}
+.lr.past .lk,.lr.past .ln{opacity:.5}
+.lr .lk::before,.items .it .n::before{content:"";display:inline-block;width:.62em;height:.9em;margin-right:.8em;vertical-align:-.1em;background:var(--lamp);box-shadow:0 0 14px rgba(240,169,63,.8);opacity:0;transform:scale(.4);transition:opacity .8s ease, transform .8s cubic-bezier(.22,.6,.2,1)}
+.lr.cur .lk::before,.items>.blk.cur .it .n::before{opacity:1;transform:none}
 .lh{font-family:var(--mono);font-size:clamp(10px,.82vw,14px);letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
 .lh.now{color:var(--lamp)}
 
 /* Columns */
 .cols{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:clamp(18px,3.4vw,72px);width:min(1560px,100%);margin-top:clamp(10px,3vh,40px);align-items:start}
-.col{display:flex;flex-direction:column;gap:.8em;border-top:1px solid var(--line);padding-top:1.1em}
+.col{display:flex;flex-direction:column;gap:.8em;border-top:1px solid var(--line);padding-top:1.1em;transition:border-color 1.2s ease}
+.cols>.blk,.items>.blk,.tally>.blk{transition:opacity 1.4s ease}
+.cols>.blk.past,.items>.blk.past,.tally>.blk.past{opacity:.5}
+.cols>.blk.cur .col{border-top-color:rgba(240,169,63,.8)}
+.items>.blk.past .it .n{color:var(--mute)}
 .col .lab{font-family:var(--mono);font-size:clamp(10px,.82vw,14px);letter-spacing:.2em;text-transform:uppercase;color:var(--lamp)}
 .big{font-family:var(--serif);font-size:clamp(44px,6.4vw,124px);line-height:.95;letter-spacing:-.02em}
 .closing{border-top:1px solid var(--line);padding-top:1em;margin-top:clamp(8px,3vh,40px)}
@@ -143,7 +163,7 @@ em{font-style:italic;color:var(--lamp)}
 
 /* Lists */
 .items{display:flex;flex-direction:column;width:100%;margin-top:clamp(8px,2vh,28px)}
-.it{display:grid;grid-template-columns:3em minmax(0,1fr);gap:.4em;padding:.7em 0;border-top:1px solid var(--line);font-family:var(--serif);font-size:clamp(19px,1.9vw,36px);line-height:1.18}
+.it{display:grid;grid-template-columns:4.2em minmax(0,1fr);gap:.4em;padding:.7em 0;border-top:1px solid var(--line);font-family:var(--serif);font-size:clamp(19px,1.9vw,36px);line-height:1.18}
 .items .blk:last-child .it{border-bottom:1px solid var(--line)}
 .it .n{font-family:var(--mono);font-size:clamp(10px,.8vw,13px);letter-spacing:.2em;color:var(--lamp);padding-top:.75em}
 .qmark{font-family:var(--serif);font-size:clamp(90px,13vw,240px);line-height:.6;height:.42em;color:var(--amber-ink)}
@@ -200,7 +220,8 @@ em{font-style:italic;color:var(--lamp)}
   #hud{gap:8px}
 }
 @media (prefers-reduced-motion:reduce){
-  .w{filter:none;transform:none;transition:opacity .6s ease}
+  .w{transform:none;transition:opacity 1s ease}
+  em .w{text-shadow:none}
   .fade{transform:none}
   #nudge.on,#aim svg{animation:none}
 }
@@ -221,7 +242,7 @@ em{font-style:italic;color:var(--lamp)}
   <div id="nudge" aria-hidden="true">Next ›</div>
 
   <section id="intro" aria-label="Title">
-    <p class="sec"><i class="mk"></i>An essay in motion · about five minutes</p>
+    <p class="sec"><i class="mk"></i>An essay in motion · about six minutes</p>
     <h1 class="t-hero"><em>The Neighbor</em><br>Is Not the Enemy</h1>
     <p class="t-lead soft">On AI, power, and where the anger belongs.</p>
     <div class="acts">
@@ -1844,7 +1865,7 @@ function splitWords(root) {
   walk(root);
 }
 function clearText() {
-  [...textEl.children].forEach(el => { el.classList.add('gone'); setTimeout(() => el.remove(), 900); });
+  [...textEl.children].forEach(el => { el.classList.add('gone'); setTimeout(() => el.remove(), 1300); });
   stage = null;
 }
 function txt(layout, html) {
@@ -1857,16 +1878,23 @@ function add(html, into) {
   const b = document.createElement('div'); b.className = 'blk'; b.innerHTML = html;
   textLog.push({ scene: cur, t: sceneT, words: (b.textContent.trim().match(/\S+/g) || []).length });
   splitWords(b);
-  (into ? stage.querySelector(into) || stage : stage).appendChild(b);
+  const host = into ? stage.querySelector(into) || stage : stage;
+  const step = el => { el.classList.remove('cur'); el.classList.add('past'); };
+  if (host !== stage) { [...host.children].forEach(step); b.classList.add('cur'); }
+  else if (html.includes('closing')) stage.querySelectorAll('.cols>.blk').forEach(step);
+  host.appendChild(b);
   requestAnimationFrame(() => requestAnimationFrame(() => b.classList.add('show')));
   return b;
 }
 const sec = s => `<p class="sec"><i class="mk fade"></i>${s}</p>`;
-const flip = k => { const r = stage && stage.querySelectorAll('.lr:not(.hd)')[k]; if (r) r.classList.add('flip'); AU.tick(.04); AU.bellAt(5 + k, .04, .3); };
+const rowsOf = () => stage ? [...stage.querySelectorAll('.lr:not(.hd)')] : [];
+const rowShow = k => { const rs = rowsOf(); rs.forEach((r, j) => { if (j < k) { r.classList.remove('cur'); r.classList.add('past'); } }); if (rs[k]) { rs[k].classList.remove('pend'); rs[k].classList.add('cur'); } AU.tick(.025); };
+const rowStrike = k => { const r = rowsOf()[k]; if (r) r.classList.add('struck'); AU.tick(.035); };
+const rowNow = k => { const r = rowsOf()[k]; if (r) r.classList.add('done'); AU.bellAt(5 + k, .045, .3); };
 
 /* ---------- the script ---------- */
 const S = [
-  { id: 'street', lab: 'It’s late', dur: 11, chord: 'Dm9', arp: 1.9,
+  { id: 'street', lab: 'It’s late', dur: 11.5, chord: 'Dm9', arp: 1.9,
     cam: { p: [2, 3.6, 4], l: [-6, 5.6, -30], dur: 6, push: 3 },
     world: { hero: false },
     cues: [
@@ -1881,150 +1909,153 @@ const S = [
       [2.4, () => txt('bottom', '<p class="t-st">And a lot of people<br>are angry about it.</p>')],
       [5.6, () => { setWorld({ aim: 'hero' }); AU.tick(.035); }]
     ] },
-  { id: 'premise', lab: 'The premise', dur: 17, chord: 'Bbmaj7', murmur: .08, arp: 2.1,
-    cam: { p: [8, 30, 60], l: [-62, 50, -320], dur: 7.5, push: 10 },
+  { id: 'premise', lab: 'The premise', dur: 22.5, chord: 'Bbmaj7', murmur: .08, arp: 2.1,
+    cam: { p: [8, 30, 60], l: [-62, 50, -320], dur: 7.5, push: 12 },
     world: { words: 'hero', aim: 'hero', scrim: .5, scrimtop: 1 },
     cues: [
       [3, () => { txt('top', sec('The premise') + '<p class="t-st">A lot of the anger at AI is pointed at <em>the wrong people.</em></p>'); setWorld({ tags: ['neighbor', 'giant'] }); }],
-      [6.5, () => { setWorld({ words: null }); AU.murmur(0); }],
-      [8, () => add('<p class="t-body">Some of that anger is earned. But too much of it lands on the person with the least power in the story.</p>')],
-      [11.5, () => add('<p class="t-lead"><i>This is an argument about aim.</i></p>')]
+      [8, () => { setWorld({ words: null }); AU.murmur(0); }],
+      [9.4, () => add('<p class="t-body">Some of that anger is earned. But too much of it lands on the person with the least power in the story.</p>')],
+      [17, () => add('<p class="t-lead"><i>This is an argument about aim.</i></p>')]
     ] },
-  { id: 'moved', sec: 'I', lab: 'What moved', dur: 17, chord: 'Fadd9', arp: 1.7,
-    cam: { p: [60, 105, 95], l: [-14, 10, -190], dur: 6, push: 14 },
+  { id: 'moved', sec: 'I', lab: 'What moved', dur: 19.5, chord: 'Fadd9', arp: 1.7,
+    cam: { p: [60, 105, 95], l: [-14, 10, -190], dur: 6, push: 16 },
     world: { warm: 0, bells: true },
     cues: [
       [.9, () => txt('bottom', sec('I · What moved') + '<p class="t-st">AI didn’t just automate tasks.</p>')],
-      [3.8, () => { add('<p class="t-st"><em>It moved power.</em></p>'); setWorld({ warm: .14, spread: 7, stream: 1 }); AU.low(41, .14); AU.whoosh(.05, true); }],
-      [8.4, () => add('<p class="t-body">Ideas can now become real things with far less capital and far fewer people. That changes who gets to compete.</p>')],
-      [13.5, () => setWorld({ stream: 0 })]
+      [4.8, () => { add('<p class="t-st"><em>It moved power.</em></p>'); setWorld({ warm: .14, spread: 7, stream: 1 }); AU.low(41, .14); AU.whoosh(.05, true); }],
+      [8.6, () => add('<p class="t-body">Ideas can now become real things with far less capital and far fewer people. That changes who gets to compete.</p>')],
+      [15.5, () => setWorld({ stream: 0 })]
     ] },
-  { id: 'gap', sec: 'I', lab: 'The gap', dur: 21, chord: 'Csus2', arp: 2.2,
-    cam: { p: [0, 14, 62], l: [10, 22, -200], dur: 7, push: 6 },
+  { id: 'gap', sec: 'I', lab: 'The gap', dur: 25.5, chord: 'Csus2', arp: 2.2,
+    cam: { p: [0, 14, 62], l: [10, 22, -200], dur: 7, push: 7 },
     world: { warm: .14, blur: 9, bright: .45, scrim: 1 },
     cues: [
       [.6, () => txt('center', sec('I · What moved') + '<p class="t-head">Most ideas used to die in the gap.</p>')],
-      [1.6, () => add('<div class="gap ns fade"><span class="gap-node">An idea</span><span class="gap-track"><span class="gap-line"></span><span class="obs" style="--x:14%;--k:0;--r:-14deg">Capital</span><span class="obs" style="--x:38%;--k:1;--r:9deg">A team</span><span class="obs" style="--x:62%;--k:2;--r:-6deg">Permission</span><span class="obs" style="--x:86%;--k:3;--r:16deg">Time</span></span><span class="gap-node gap-end">A real thing</span></div>')],
-      [6.8, () => { const g = stage && stage.querySelector('.gap'); if (g) g.classList.add('short'); [0, 1, 2, 3].forEach(k => AU.tick(.035, k * .14)); AU.bellAt(7, .08, 0, 1.3); }],
-      [9.8, () => add('<p class="t-body">Money, people, permission and time used to stand between an idea and the real thing. AI shrank that distance, and the advantage of whoever could afford to cross it.</p>')]
+      [1.8, () => add('<div class="gap ns fade"><span class="gap-node">An idea</span><span class="gap-track"><span class="gap-line"></span><span class="obs" style="--x:14%;--k:0;--r:-14deg">Capital</span><span class="obs" style="--x:38%;--k:1;--r:9deg">A team</span><span class="obs" style="--x:62%;--k:2;--r:-6deg">Permission</span><span class="obs" style="--x:86%;--k:3;--r:16deg">Time</span></span><span class="gap-node gap-end">A real thing</span></div>')],
+      [7.8, () => { const g = stage && stage.querySelector('.gap'); if (g) g.classList.add('short'); [0, 1, 2, 3].forEach(k => AU.tick(.035, k * .14)); AU.bellAt(7, .08, 0, 1.3); }],
+      [10.8, () => add('<p class="t-body">Money, people, permission and time used to stand between an idea and the real thing. AI shrank that distance, and the advantage of whoever could afford to cross it.</p>')]
     ] },
-  { id: 'then-now', sec: 'I', lab: 'Then and now', dur: 17, chord: 'Gm9', arp: 2.2,
-    cam: { p: [2, 18, 58], l: [-12, 18, -200], dur: 7, push: 6 },
+  { id: 'then-now', sec: 'I', lab: 'Then and now', dur: 27, chord: 'Gm9', arp: 2.3,
+    cam: { p: [2, 18, 58], l: [-12, 18, -200], dur: 7, push: 8 },
     world: { warm: .14, blur: 9, bright: .42, scrim: 1 },
     cues: [
       [.5, () => txt('center', sec('I · What moved') + '<p class="t-head">What it used to take, and what it takes now</p>')],
-      [1.3, () => add('<div class="ledger ns fade"><div class="lr hd"><span class="lc lk"></span><span class="lc lh">Then</span><span class="lc lh now">Now</span></div>' +
-        '<div class="lr"><span class="lc lk">Capital</span><span class="lc lt">Funding before the first line of work</span><span class="lc ln">A laptop and a modest monthly bill</span></div>' +
-        '<div class="lr"><span class="lc lk">People</span><span class="lc lt">A designer, developer, writer, marketer</span><span class="lc ln">One person with a clear idea, or a few</span></div>' +
-        '<div class="lr"><span class="lc lk">Permission</span><span class="lc lt">Someone with money to say yes</span><span class="lc ln">Nobody’s. You can just begin.</span></div>' +
-        '<div class="lr"><span class="lc lk">Time</span><span class="lc lt">Months or years before anyone sees it</span><span class="lc ln">Days or weeks to a first real version</span></div></div>')],
-      [4, () => flip(0)], [6.4, () => flip(1)], [8.8, () => flip(2)], [11.2, () => flip(3)]
+      [1.4, () => add('<div class="ledger ns fade"><div class="lr hd"><span class="lc lk"></span><span class="lc lh">Then</span><span class="lc lh now">Now</span></div>' +
+        '<div class="lr pend"><span class="lc lk">Capital</span><span class="lc lt"><span>Funding before the first line of work</span></span><span class="lc ln">A laptop and a modest monthly bill</span></div>' +
+        '<div class="lr pend"><span class="lc lk">People</span><span class="lc lt"><span>A designer, developer, writer, marketer</span></span><span class="lc ln">One person with a clear idea, or a few</span></div>' +
+        '<div class="lr pend"><span class="lc lk">Permission</span><span class="lc lt"><span>Someone with money to say yes</span></span><span class="lc ln">Nobody’s. You can just begin.</span></div>' +
+        '<div class="lr pend"><span class="lc lk">Time</span><span class="lc lt"><span>Months or years before anyone sees it</span></span><span class="lc ln">Days or weeks to a first real version</span></div></div>')],
+      [2.4, () => rowShow(0)], [4.9, () => rowStrike(0)], [5.6, () => rowNow(0)],
+      [7.6, () => rowShow(1)], [10.1, () => rowStrike(1)], [10.8, () => rowNow(1)],
+      [12.8, () => rowShow(2)], [15.3, () => rowStrike(2)], [16, () => rowNow(2)],
+      [18, () => rowShow(3)], [20.5, () => rowStrike(3)], [21.2, () => rowNow(3)]
     ] },
-  { id: 'vision', sec: 'II', lab: 'What’s scarce now', dur: 15, chord: 'Bbmaj7', arp: 1.9,
-    cam: { p: [0, 46, 92], l: [0, 6, -170], dur: 6, push: 12 },
+  { id: 'vision', sec: 'II', lab: 'What’s scarce now', dur: 17.8, chord: 'Bbmaj7', arp: 1.9,
+    cam: { p: [0, 46, 92], l: [0, 6, -170], dur: 6, push: 14 },
     world: { warm: .14, cool: .78, coolSpread: 3.2, bells: true },
     cues: [
       [.9, () => txt('bottom', sec('II · What’s scarce now') + '<p class="t-st">Access to tools is no longer the scarce thing.</p>')],
-      [4.9, () => { add('<p class="t-hero"><em>Vision is.</em></p>'); setWorld({ warm: .22, spread: 3 }); AU.low(46, .13); }],
-      [8.4, () => add('<p class="t-body">The ability to see something worth making, and the willingness to steer it into existence.</p>')]
+      [5.4, () => { add('<p class="t-hero"><em>Vision is.</em></p>'); setWorld({ warm: .22, spread: 3 }); AU.low(46, .13); }],
+      [8.8, () => add('<p class="t-body">The ability to see something worth making, and the willingness to steer it into existence.</p>')]
     ] },
-  { id: 'two-parts', sec: 'II', lab: 'See and steer', dur: 21, chord: 'Fadd9', arp: 2.2,
-    cam: { p: [24, 40, 70], l: [-12, 10, -200], dur: 7, push: 8 },
+  { id: 'two-parts', sec: 'II', lab: 'See and steer', dur: 26, chord: 'Fadd9', arp: 2.2,
+    cam: { p: [24, 40, 70], l: [-12, 10, -200], dur: 7, push: 10 },
     world: { warm: .22, cool: .78, blur: 9, bright: .42, scrim: 1 },
     cues: [
       [.5, () => txt('center', sec('II · What’s scarce now') + '<p class="t-head">Vision comes in two parts</p>' + '<div class="cols ns" style="--n:2"></div>')],
-      [1.7, () => { add('<div class="col"><p class="lab">01</p><p class="big">To see.</p><p class="t-body">Noticing something worth making before it exists: a need nobody is serving, a tool that should be there, a story nobody has told.</p></div>', '.cols'); AU.bellAt(4, .055, -.3); }],
-      [7.4, () => { add('<div class="col"><p class="lab">02</p><p class="big">To steer.</p><p class="t-body">Staying with it. Making the hundreds of small calls that turn a rough first output into the thing you actually meant.</p></div>', '.cols'); AU.bellAt(6, .055, .3); }],
-      [13.4, () => add('<p class="t-lead closing"><i>The tools can do more and more of the work. They can’t decide what’s worth doing.</i></p>')]
+      [1.8, () => { add('<div class="col"><p class="lab">01</p><p class="big">To see.</p><p class="t-body">Noticing what’s worth making before it exists: a need nobody serves, a missing tool, an untold story.</p></div>', '.cols'); AU.bellAt(4, .055, -.3); }],
+      [8.6, () => { add('<div class="col"><p class="lab">02</p><p class="big">To steer.</p><p class="t-body">Staying with it. Making the hundred small calls that turn a rough first output into what you meant.</p></div>', '.cols'); AU.bellAt(6, .055, .3); }],
+      [16.1, () => add('<p class="t-lead closing"><i>The tools can do more and more of the work. They can’t decide what’s worth doing.</i></p>')]
     ] },
-  { id: 'discomfort', sec: 'III', lab: 'The discomfort', dur: 16, chord: 'Dm9', arp: 2,
+  { id: 'discomfort', sec: 'III', lab: 'The discomfort', dur: 17, chord: 'Dm9', arp: 2,
     cam: { p: [0, 160, 120], l: [0, 0, -175], dur: 7, push: 18 },
     world: { warm: .22, cool: .6, bells: true },
     cues: [
       [1, () => { txt('bottom', sec('III · The discomfort') + '<p class="t-st">For many critics, the real discomfort is <em>how widely</em> the power is now spread.</p>'); setWorld({ warm: .46, spread: 9 }); }],
       [7.4, () => add('<p class="t-body">When something scarce becomes common, the people who used to hold it feel the change first.</p>')]
     ] },
-  { id: 'three', sec: 'III', lab: 'Where it comes from', dur: 25, chord: 'Gm9', arp: 2.3,
-    cam: { p: [-34, 64, 90], l: [12, 10, -220], dur: 7, push: 8 },
+  { id: 'three', sec: 'III', lab: 'Where it comes from', dur: 33, chord: 'Gm9', arp: 2.3,
+    cam: { p: [-34, 64, 90], l: [12, 10, -220], dur: 7, push: 10 },
     world: { warm: .46, cool: .6, blur: 9, bright: .42, scrim: 1 },
     cues: [
       [.5, () => txt('center', sec('III · The discomfort') + '<p class="t-head">Where the discomfort comes from</p><div class="cols ns" style="--n:3"></div>')],
-      [1.5, () => { add('<div class="col"><p class="lab">Fear</p><p class="t-lead">Some fear the power.</p><p class="t-body">Power that used to be scarce is suddenly everywhere. That’s unsettling, especially if your position depended on the scarcity.</p></div>', '.cols'); AU.bellAt(3, .05, -.4); }],
-      [7.5, () => { add('<div class="col"><p class="lab">Know-how</p><p class="t-lead">Some don’t know how yet.</p><p class="t-body">The tools are new and the learning curve is uneven. Being outside something can feel like being pushed out of it.</p></div>', '.cols'); AU.bellAt(4, .05, 0); }],
-      [13.5, () => { add('<div class="col"><p class="lab">Possibility</p><p class="t-lead">Some don’t see it yet.</p><p class="t-body">Not for lack of ability. Nobody has shown them what one person can now make.</p></div>', '.cols'); AU.bellAt(6, .05, .4); }],
-      [19.4, () => add('<p class="t-lead closing"><i>None of these make the neighbor the problem.</i></p>')]
+      [1.6, () => { add('<div class="col"><p class="lab">Fear</p><p class="t-lead">Some fear the power.</p><p class="t-body">Power that used to be scarce is suddenly everywhere. That’s unsettling, especially if your position depended on the scarcity.</p></div>', '.cols'); AU.bellAt(3, .05, -.4); }],
+      [9.8, () => { add('<div class="col"><p class="lab">Know-how</p><p class="t-lead">Some don’t know how yet.</p><p class="t-body">The tools are new and the learning curve is uneven. Being outside something can feel like being pushed out of it.</p></div>', '.cols'); AU.bellAt(4, .05, 0); }],
+      [19.2, () => { add('<div class="col"><p class="lab">Possibility</p><p class="t-lead">Some don’t see it yet.</p><p class="t-body">Not for lack of ability. Nobody has shown them what one person can now make.</p></div>', '.cols'); AU.bellAt(6, .05, .4); }],
+      [26.8, () => add('<p class="t-lead closing"><i>None of these make the neighbor the problem.</i></p>')]
     ] },
-  { id: 'two-uses', sec: 'IV', lab: 'Two stories', dur: 13, chord: 'Ebmaj7', drone: 1,
-    cam: { p: [0, 5, -296], l: [0, 150, -470], dur: 6.5, push: 10 },
+  { id: 'two-uses', sec: 'IV', lab: 'Two stories', dur: 15, chord: 'Ebmaj7', drone: 1,
+    cam: { p: [0, 5, -296], l: [0, 150, -470], dur: 6.5, push: 12 },
     world: { warm: .22, cool: .5, crown: .3 },
     cues: [
       [1.6, () => txt('bottom', sec('IV · Two stories') + '<p class="t-st">A solo creator using AI to compete and a giant using AI to protect its margins <em>are not doing the same thing.</em></p>')]
     ] },
-  { id: 'giant', sec: 'IV', lab: 'The giant’s version', dur: 19.5, chord: 'Ebmaj7', drone: 1,
-    cam: { p: [-40, 70, -200], l: [-96, 140, -460], dur: 6, push: 8 },
+  { id: 'giant', sec: 'IV', lab: 'The giant’s version', dur: 23, chord: 'Ebmaj7', drone: 1,
+    cam: { p: [-40, 70, -200], l: [-96, 140, -460], dur: 6, push: 10 },
     world: { warm: .22, cool: .5, crown: .3, tower: 1, scrimleft: 1 },
     cues: [
       [.6, () => txt('left', sec('IV · The giant’s version') + '<p class="t-head">Follow the savings</p><div class="tally ns"></div>')],
       [2.2, () => { add('<div class="tl"><span class="tk">What it costs them to make</span><span class="tv">Down</span></div>', '.tally'); AU.tick(.035); }],
       [3.8, () => { setWorld({ tower: .86 }); AU.thud(.3); }],
-      [4.6, () => { add('<div class="tl"><span class="tk">How many people they employ</span><span class="tv">Down</span></div>', '.tally'); }],
-      [5, () => { setWorld({ tower: .74 }); AU.thud(.28); }],
-      [6.2, () => { setWorld({ tower: .62 }); AU.thud(.26); }],
-      [7.4, () => { setWorld({ tower: .52 }); AU.thud(.24); }],
-      [8.6, () => { setWorld({ tower: .44 }); AU.thud(.22); }],
-      [10, () => { add('<div class="tl"><span class="tk">What you pay</span><span class="tv"><em>The same, or more</em></span></div>', '.tally'); setWorld({ crown: 1 }); AU.tick(.05); AU.low(39, .11); }],
-      [12.6, () => add('<p class="t-body">The efficiency is real. It just doesn’t reach you, or the people who were let go.</p>')]
+      [5.2, () => { add('<div class="tl"><span class="tk">How many people they employ</span><span class="tv">Down</span></div>', '.tally'); }],
+      [5.6, () => { setWorld({ tower: .74 }); AU.thud(.28); }],
+      [6.8, () => { setWorld({ tower: .62 }); AU.thud(.26); }],
+      [8, () => { setWorld({ tower: .52 }); AU.thud(.24); }],
+      [9.2, () => { setWorld({ tower: .44 }); AU.thud(.22); }],
+      [10.8, () => { add('<div class="tl"><span class="tk">What you pay</span><span class="tv"><em>The same, or more</em></span></div>', '.tally'); setWorld({ crown: 1 }); AU.tick(.05); AU.low(39, .11); }],
+      [13.8, () => add('<p class="t-body">The efficiency is real. It just doesn’t reach you, or the people who were let go.</p>')]
     ] },
-  { id: 'neighbor', sec: 'IV', lab: 'The neighbor’s version', dur: 22.5, chord: 'Bbmaj7', arp: 2.4,
-    cam: { p: [-4.5, 6.4, -10], l: [-10, 7, -78], dur: 6.5, push: 3 },
+  { id: 'neighbor', sec: 'IV', lab: 'The neighbor’s version', dur: 29.5, chord: 'Bbmaj7', arp: 2.4,
+    cam: { p: [-4.5, 6.4, -10], l: [-10, 7, -78], dur: 6.5, push: 4 },
     world: { warm: .1, cool: .28, tower: .44, crown: 1, extras: 0, scrimleft: 1 },
     cues: [
       [.7, () => txt('left', sec('IV · The neighbor’s version') + '<p class="t-head">Who the neighbor actually is</p><div class="items ns"></div>')],
       [2.2, () => { add('<div class="it"><span class="n">01</span><span>A nurse who built the scheduling tool her unit actually needed.</span></div>', '.items'); setWorld({ extras: 1, tags: ['n1'] }); AU.bell(65, .075, .4, true); }],
-      [5.6, () => { add('<div class="it"><span class="n">02</span><span>A teenager who finally finished the game they’d been sketching for years.</span></div>', '.items'); setWorld({ extras: 2, tags: ['n1', 'n2'] }); AU.bell(69, .075, .45, true); }],
-      [9, () => { add('<div class="it"><span class="n">03</span><span>A retired machinist turning forty years of know-how into a course.</span></div>', '.items'); setWorld({ extras: 3, tags: ['n1', 'n2', 'n3'] }); AU.bell(72, .075, .5, true); }],
-      [12.4, () => { add('<div class="it"><span class="n">04</span><span>A two-person studio taking on work that used to need a whole agency.</span></div>', '.items'); setWorld({ extras: 4, tags: ['n1', 'n2', 'n3', 'n4'] }); AU.bell(74, .075, .55, true); }],
-      [15.6, () => add('<p class="t-body">None of them had a big budget or a team. Each of them had a reason.</p>')]
+      [6.6, () => { add('<div class="it"><span class="n">02</span><span>A teenager who finally finished the game they’d been sketching for years.</span></div>', '.items'); setWorld({ extras: 2, tags: ['n1', 'n2'] }); AU.bell(69, .075, .45, true); }],
+      [11, () => { add('<div class="it"><span class="n">03</span><span>A retired machinist turning forty years of know-how into a course.</span></div>', '.items'); setWorld({ extras: 3, tags: ['n1', 'n2', 'n3'] }); AU.bell(72, .075, .5, true); }],
+      [15.4, () => { add('<div class="it"><span class="n">04</span><span>A two-person studio taking on work that used to need a whole agency.</span></div>', '.items'); setWorld({ extras: 4, tags: ['n1', 'n2', 'n3', 'n4'] }); AU.bell(74, .075, .55, true); }],
+      [20.2, () => add('<p class="t-body">None of them had a big budget or a team. Each of them had a reason.</p>')]
     ] },
-  { id: 'quote', lab: 'The line', dur: 15, chord: null,
+  { id: 'quote', lab: 'The line', dur: 16, chord: null,
     cam: { p: [-4, 6.9, -14], l: [-10, 7.4, -80], dur: 8 },
     world: { warm: .1, cool: .28, tower: .44, crown: 1, extras: 4, scrim: .3 },
     cues: [
       [0, () => AU.hush(1.1)],
       [1.4, () => { $('#amber').classList.add('on'); AU.unhush(.4); AU.chord('Fmaj9', { att: 1.8, gain: .11 }); AU.boom(29, .26); }],
-      [2.5, () => txt('quote', '<p class="qmark ns fade">“</p><p class="t-st">Hate the giant that cuts jobs while raising prices.</p>')],
-      [6.4, () => { add('<p class="t-st"><em>Don’t hate the neighbor who finally gets to ship something.</em></p>'); AU.bell(77, .08, 0, true); AU.bell(81, .05, .2, true, .22); }]
+      [2.6, () => txt('quote', '<p class="qmark ns fade">“</p><p class="t-st">Hate the giant that cuts jobs while raising prices.</p>')],
+      [7.4, () => { add('<p class="t-st"><em>Don’t hate the neighbor who finally gets to ship something.</em></p>'); AU.bell(77, .08, 0, true); AU.bell(81, .05, .2, true, .22); }]
     ] },
-  { id: 'creativity', sec: 'V', lab: 'Where it belongs', dur: 15, chord: 'Dm9', drone: .35, arp: 2.2,
-    cam: { p: [0, 10, 28], l: [0, 46, -400], dur: 6, push: 8 },
+  { id: 'creativity', sec: 'V', lab: 'Where it belongs', dur: 17.6, chord: 'Dm9', drone: .35, arp: 2.2,
+    cam: { p: [0, 10, 28], l: [0, 46, -400], dur: 6, push: 9 },
     world: { warm: .2, cool: .3, tower: .44, crown: 1, extras: 4, aim: 'hero' },
     cues: [
       [1, () => txt('bottom', sec('V · Where it belongs') + '<p class="t-st">Creativity is not the problem.</p>')],
-      [4.2, () => { add('<p class="t-st"><em>Misdirected anger is. So is gatekeeping.</em></p>'); setWorld({ aim: 'tower', tags: ['giant'] }); AU.whoosh(.06, true); AU.low(38, .12); }],
-      [6, () => { setWorld({ words: 'tower' }); AU.murmur(.045); }],
-      [9, () => add('<p class="t-body">People have always wanted to make things. Now more of them can.</p>')]
+      [4.4, () => { add('<p class="t-st"><em>Misdirected anger is. So is gatekeeping.</em></p>'); setWorld({ aim: 'tower', tags: ['giant'] }); AU.whoosh(.06, true); AU.low(38, .12); }],
+      [6.4, () => { setWorld({ words: 'tower' }); AU.murmur(.045); }],
+      [9.6, () => add('<p class="t-body">People have always wanted to make things. Now more of them can.</p>')]
     ] },
-  { id: 'questions', sec: 'V', lab: 'Better questions', dur: 21, chord: 'Gm9', drone: .35,
-    cam: { p: [-30, 62, -170], l: [-84, 124, -460], dur: 6.5, push: 8 },
+  { id: 'questions', sec: 'V', lab: 'Better questions', dur: 28, chord: 'Gm9', drone: .35,
+    cam: { p: [-30, 62, -170], l: [-84, 124, -460], dur: 6.5, push: 10 },
     world: { warm: .2, cool: .3, tower: .44, crown: 1, extras: 4, aim: 'tower', scrimleft: 1 },
     cues: [
       [.6, () => txt('left', sec('V · Where it belongs') + '<p class="t-head">Aim the hard questions where the power is</p>')],
-      [1.8, () => add('<p class="t-body">AI raises real questions about jobs, credit, consent and who benefits. They deserve serious answers. Ask them of the people who can actually give them.</p><div class="items ns"></div>')],
-      [7.2, () => { add('<div class="it"><span class="n">01</span><span>Who kept the savings when the work got cheaper?</span></div>', '.items'); AU.low(43, .11); }],
-      [9.8, () => { add('<div class="it"><span class="n">02</span><span>Did prices fall when costs did?</span></div>', '.items'); AU.low(46, .11); }],
-      [12.4, () => { add('<div class="it"><span class="n">03</span><span>Who was let go, and what were they offered?</span></div>', '.items'); AU.low(41, .11); }],
-      [15, () => { add('<div class="it"><span class="n">04</span><span>Who is being told they aren’t allowed to make things?</span></div>', '.items'); AU.low(38, .12); }]
+      [2.2, () => add('<p class="t-body">AI raises real questions about jobs, credit, consent and who benefits. They deserve serious answers. Ask them of the people who can actually give them.</p><div class="items ns"></div>')],
+      [10.8, () => { add('<div class="it"><span class="n">01</span><span>Who kept the savings when the work got cheaper?</span></div>', '.items'); AU.low(43, .11); }],
+      [14.3, () => { add('<div class="it"><span class="n">02</span><span>Did prices fall when costs did?</span></div>', '.items'); AU.low(46, .11); }],
+      [17.8, () => { add('<div class="it"><span class="n">03</span><span>Who was let go, and what were they offered?</span></div>', '.items'); AU.low(41, .11); }],
+      [21.3, () => { add('<div class="it"><span class="n">04</span><span>Who is being told they aren’t allowed to make things?</span></div>', '.items'); AU.low(38, .12); }]
     ] },
-  { id: 'closer', lab: 'Your neighbor', dur: 27, chord: 'Dmaj9', end: true, arp: 1.5,
+  { id: 'closer', lab: 'Your neighbor', dur: 28, chord: 'Dmaj9', end: true, arp: 1.5,
     cam: { p: [0, 46, 74], l: [0, 6, -210], dur: 5 },
     world: { warm: .2, cool: .25, tower: .44, crown: 1, extras: 4, bells: true },
     cues: [
       [.2, () => setWorld({ warm: .64, spread: 15 })],
       [2, () => txt('bottom', '<p class="t-lead soft" style="max-width:30ch">Somewhere on your street, a light is on late. Someone is finally making the thing they always talked about.</p>')],
-      [4.5, () => camSet([0, 132, 176], [0, 0, -230], 21)],
-      [10, () => add('<p class="t-st">That’s not the enemy.</p>')],
-      [12.6, () => { add('<p class="t-st"><em>That’s your neighbor.</em></p>'); AU.boom(26, .22); }],
-      [20, () => add('<div class="end ns fade"><p>The Neighbor Is Not the Enemy</p><button class="btn" type="button" data-act="replay">Watch again</button></div>')]
+      [4.5, () => camSet([0, 132, 176], [0, 0, -230], 22)],
+      [10.2, () => add('<p class="t-st">That’s not the enemy.</p>')],
+      [13.2, () => { add('<p class="t-st"><em>That’s your neighbor.</em></p>'); AU.boom(26, .22); }],
+      [21, () => add('<div class="end ns fade"><p>The Neighbor Is Not the Enemy</p><button class="btn" type="button" data-act="replay">Watch again</button></div>')]
     ] }
 ];
 S.forEach(s => s.cues.sort((a, b) => a[0] - b[0]));
@@ -2046,11 +2077,11 @@ let cur = -1, fired = 0, playing = true, auto = true, started = false;
 function go(i) {
   if (i < 0 || i >= S.length) return;
   const s = S[i];
-  cur = i; sceneT = 0; fired = 0; arpT = 1.2;
+  cur = i; sceneT = -.6; fired = 0; arpT = 1.2;
   clearText();
   if (s.id !== 'quote') $('#amber').classList.remove('on');
   setWorld(Object.assign({}, s.world), true);
-  camSet(s.cam.p, s.cam.l, s.cam.dur, 0, s.cam.push || 0, s.dur - s.cam.dur);
+  camSet(s.cam.p, s.cam.l, s.cam.dur, -.6, s.cam.push || 0, s.dur - s.cam.dur);
   words.forEach(w => { if (!s.world.words) w.t = Math.max(w.t, .8); });
   if (AU.ready) {
     if (s.id !== 'quote') AU.unhush(.8);

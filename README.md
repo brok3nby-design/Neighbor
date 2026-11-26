@@ -1,6 +1,6 @@
 # The Neighbor Is Not the Enemy
 
-A five-minute film about AI, power, and where the anger belongs.
+A six-minute film about AI, power, and where the anger belongs.
 
 ![The title screen: a night city with one tall tower, and the words "The Neighbor Is Not the Enemy"](preview.jpg)
 
@@ -18,7 +18,7 @@ Everything lives in one file, `index.html`. Download it and open it in any moder
 
 | Key | What it does |
 | --- | --- |
-| Play with sound | Plays the whole film on its own (about five minutes) |
+| Play with sound | Plays the whole film on its own (about six minutes) |
 | Present it myself | Waits for you to move on, for presenting live |
 | → or click | Next part |
 | ← | Previous part |
