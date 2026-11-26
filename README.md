@@ -4,7 +4,7 @@ A six-minute film about AI, power, and where the anger belongs.
 
 ![The title screen: a night city with one tall tower, and the words "The Neighbor Is Not the Enemy"](preview.jpg)
 
-**Watch it:** https://brok3nby-design.github.io/Neighbor/
+**Watch it:** https://brok3nbydesign.com/Neighbor/
 
 Best on a laptop or desktop, full screen, with sound on. It also plays on phones.
 
