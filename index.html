@@ -206,9 +206,10 @@ em{font-style:italic;color:var(--lamp)}
 #fin{position:absolute;inset:0;background:#050506;opacity:0;visibility:hidden;transition:opacity 2.6s ease, visibility 0s linear 2.6s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,3vh,30px);padding:var(--top) var(--gr) var(--bot) var(--gl);text-align:center}
 #fin.on{opacity:1;visibility:visible;transition:opacity 2.6s ease, visibility 0s}
 .fin-mark{display:block;width:12px;height:17px;background:var(--lamp);box-shadow:0 0 22px rgba(240,169,63,.85);opacity:0;transition:opacity 1.6s ease 2.4s}
-.fin-name{font-family:var(--serif);font-weight:400;font-size:clamp(30px,3.4vw,56px);letter-spacing:.01em;color:var(--ink);opacity:0;transform:translateY(8px);transition:opacity 2.2s cubic-bezier(.4,0,.3,1) 2.8s, transform 2.6s cubic-bezier(.22,.6,.2,1) 2.8s}
-.fin-again{margin-top:clamp(18px,4vh,40px);opacity:0;transition:opacity 1.6s ease 6.5s}
-#fin.on .fin-mark,#fin.on .fin-name,#fin.on .fin-again{opacity:1;transform:none}
+.fin-by{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(19px,1.8vw,30px);color:var(--ash);margin-bottom:calc(-1 * clamp(6px,1.2vh,14px));opacity:0;transform:translateY(8px);transition:opacity 2.2s cubic-bezier(.4,0,.3,1) 2.9s, transform 2.6s cubic-bezier(.22,.6,.2,1) 2.9s}
+.fin-name{font-family:var(--serif);font-weight:400;font-size:clamp(30px,3.4vw,56px);letter-spacing:.01em;color:var(--ink);opacity:0;transform:translateY(8px);transition:opacity 2.2s cubic-bezier(.4,0,.3,1) 4.6s, transform 2.6s cubic-bezier(.22,.6,.2,1) 4.6s}
+.fin-again{margin-top:clamp(18px,4vh,40px);opacity:0;transition:opacity 1.6s ease 8.2s}
+#fin.on .fin-mark,#fin.on .fin-by,#fin.on .fin-name,#fin.on .fin-again{opacity:1;transform:none}
 #nudge{position:absolute;right:var(--gr);bottom:calc(env(safe-area-inset-bottom,0px) + clamp(70px,10vh,96px));font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--lamp);opacity:0;transition:opacity .8s ease;pointer-events:none}
 #nudge.on{opacity:.9;animation:breathe 2.4s ease-in-out infinite}
 @keyframes breathe{0%,100%{opacity:.35}50%{opacity:.95}}
@@ -252,7 +253,7 @@ em{font-style:italic;color:var(--lamp)}
   <div id="grain" aria-hidden="true"></div>
   <div id="text" aria-live="polite"></div>
   <div id="nudge" aria-hidden="true">Next ›</div>
-  <div id="fin" aria-live="polite"><i class="fin-mark"></i><p class="fin-name">Brok3n by Design</p><button class="btn fin-again" type="button" data-act="replay">Watch again</button></div>
+  <div id="fin" aria-live="polite"><i class="fin-mark"></i><p class="fin-by">Made by a neighbor.</p><p class="fin-name">Brok3n by Design</p><button class="btn fin-again" type="button" data-act="replay">Watch again</button></div>
 
   <section id="intro" aria-label="Title">
     <p class="sec"><i class="mk"></i>An essay in motion · about six minutes</p>
@@ -2095,7 +2096,7 @@ const S = [
       [21.3, AD('<div class="it"><span class="n">04</span><span>Who is being told they aren’t allowed to make things?</span></div>', '.items')],
       [21.3, () => AU.low(38, .12)]
     ] },
-  { id: 'closer', lab: 'Your neighbor', dur: 31, chord: 'Dmaj9', end: true, arp: 1.5,
+  { id: 'closer', lab: 'Your neighbor', dur: 33, chord: 'Dmaj9', end: true, arp: 1.5,
     cam: { p: [0, 46, 74], l: [0, 6, -210], dur: 5 },
     world: { warm: .2, cool: .25, tower: .44, crown: 1, extras: 4, bells: true },
     cues: [
@@ -2106,7 +2107,7 @@ const S = [
       [13.2, AD('<p class="t-st"><em>That’s your neighbor.</em></p>')],
       [13.2, () => AU.boom(26, .22)],
       [20.5, () => { $('#fin').classList.add('on'); AU.hush(4.5); }],
-      [23.4, () => AU.bell(74, .07, 0, true)]
+      [25.2, () => AU.bell(74, .07, 0, true)]
     ] }
 ];
 S.forEach(s => s.cues.sort((a, b) => a[0] - b[0]));
