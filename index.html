@@ -84,17 +84,18 @@ button{font:inherit}
 .l-left>.blk{max-width:min(760px,100%)}
 .l-quote{justify-content:center;color:var(--amber-ink)}
 .l-quote em{color:var(--amber-ink)}
-.blk{max-width:100%}
-.w{display:inline-block;opacity:0;transform:translateY(.22em);transition:opacity 1.6s cubic-bezier(.4,0,.3,1),transform 1.9s cubic-bezier(.22,.6,.2,1);transition-delay:calc(var(--i) * var(--stg,55ms))}
-.show .w{opacity:1;transform:none}
+.blk{max-width:100%;transition:opacity 1s ease}
+.blk:not(.show){visibility:hidden;opacity:0}
+.w{display:inline-block;transition:opacity 1.6s cubic-bezier(.4,0,.3,1),transform 1.9s cubic-bezier(.22,.6,.2,1);transition-delay:calc(var(--i) * var(--stg,55ms))}
+.blk:not(.show) .w{opacity:0;transform:translateY(.22em)}
 .t-st,.t-hero{--stg:85ms}
 .t-lead,.t-head,.big{--stg:55ms}
 .t-body,.it,.tk{--stg:24ms}
-em .w{text-shadow:0 0 26px rgba(240,169,63,.85);transition-property:opacity,transform,text-shadow;transition-duration:1.6s,1.9s,3.2s}
-.show em .w{text-shadow:0 0 0 rgba(240,169,63,0)}
-.l-quote em .w{text-shadow:none}
-.fade{opacity:0;transform:translateY(14px);transition:opacity 1.6s cubic-bezier(.4,0,.3,1) .1s, transform 1.8s cubic-bezier(.22,.6,.2,1) .1s}
-.show .fade{opacity:1;transform:none}
+em .w{text-shadow:0 0 0 rgba(240,169,63,0);transition-property:opacity,transform,text-shadow;transition-duration:1.6s,1.9s,3.2s}
+.blk:not(.show) em .w{text-shadow:0 0 26px rgba(240,169,63,.85)}
+.l-quote .blk:not(.show) em .w{text-shadow:none}
+.fade{transition:opacity 1.6s cubic-bezier(.4,0,.3,1) .1s, transform 1.8s cubic-bezier(.22,.6,.2,1) .1s}
+.blk:not(.show) .fade{opacity:0;transform:translateY(14px)}
 p,h1,h2{margin:0}
 em{font-style:italic;color:var(--lamp)}
 .t-hero{font-family:var(--serif);font-weight:400;font-size:clamp(66px,11vw,210px);line-height:.9;letter-spacing:-.025em}
@@ -109,10 +110,10 @@ em{font-style:italic;color:var(--lamp)}
 /* The gap */
 .gap{display:flex;align-items:center;gap:clamp(12px,1.6vw,30px);margin-top:clamp(28px,7vh,90px);font-family:var(--serif);font-size:clamp(20px,2.3vw,42px);white-space:nowrap}
 .gap-track{position:relative;height:2px;width:clamp(60px, calc(100vw - var(--gl) - var(--gr) - 11em), 1100px);transition:width 1.9s cubic-bezier(.65,0,.25,1)}
-.gap-line{position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(0);transition:transform 1.8s cubic-bezier(.3,.6,.2,1) .4s, background .9s ease, box-shadow .9s ease}
-.show .gap-line{transform:scaleX(1)}
-.obs{position:absolute;bottom:16px;left:var(--x);transform:translateX(-50%);font-family:var(--mono);font-size:clamp(10px,.82vw,14px);letter-spacing:.2em;text-transform:uppercase;color:var(--ash);opacity:0;transition:opacity .7s ease calc(.9s + var(--k) * .28s)}
-.show .obs{opacity:1}
+.gap-line{position:absolute;inset:0;background:var(--ink);transform-origin:left;transition:transform 1.8s cubic-bezier(.3,.6,.2,1) .4s, background .9s ease, box-shadow .9s ease}
+.blk:not(.show) .gap-line{transform:scaleX(0)}
+.obs{position:absolute;bottom:16px;left:var(--x);transform:translateX(-50%);font-family:var(--mono);font-size:clamp(10px,.82vw,14px);letter-spacing:.2em;text-transform:uppercase;color:var(--ash);transition:opacity .7s ease calc(.9s + var(--k) * .28s)}
+.blk:not(.show) .obs{opacity:0}
 .gap.short .gap-track{width:clamp(40px,6vw,110px)}
 .gap.short .obs{opacity:0;transform:translate(-50%,110px) rotate(var(--r));transition:opacity 1s ease calc(var(--k) * .14s), transform 1.1s cubic-bezier(.55,0,.8,.3) calc(var(--k) * .14s)}
 .gap.short .gap-line{background:var(--lamp);box-shadow:0 0 14px rgba(240,169,63,.8)}
@@ -1868,23 +1869,25 @@ function clearText() {
   [...textEl.children].forEach(el => { el.classList.add('gone'); setTimeout(() => el.remove(), 1300); });
   stage = null;
 }
-function txt(layout, html) {
-  clearText();
-  stage = document.createElement('div'); stage.className = 'st l-' + layout; textEl.appendChild(stage);
-  if (html) add(html);
+let built = new Map();
+function makeBlock(html) { const b = document.createElement('div'); b.className = 'blk'; b.innerHTML = html; splitWords(b); return b; }
+function buildScene(sc) {
+  clearText(); built = new Map();
+  for (const c of sc.cues) {
+    const d = c[1]; if (typeof d === 'function') continue;
+    if (d.t === 'txt' || !stage) { stage = document.createElement('div'); stage.className = 'st l-' + (d.layout || 'bottom'); textEl.appendChild(stage); }
+    const b = makeBlock(d.html), host = d.into ? stage.querySelector(d.into) || stage : stage;
+    host.appendChild(b); built.set(c, b);
+  }
 }
-function add(html, into) {
-  if (!stage) txt('bottom');
-  const b = document.createElement('div'); b.className = 'blk'; b.innerHTML = html;
-  textLog.push({ scene: cur, t: sceneT, words: (b.textContent.trim().match(/\S+/g) || []).length });
-  splitWords(b);
-  const host = into ? stage.querySelector(into) || stage : stage;
-  const step = el => { el.classList.remove('cur'); el.classList.add('past'); };
-  if (host !== stage) { [...host.children].forEach(step); b.classList.add('cur'); }
-  else if (html.includes('closing')) stage.querySelectorAll('.cols>.blk').forEach(step);
-  host.appendChild(b);
-  requestAnimationFrame(() => requestAnimationFrame(() => b.classList.add('show')));
-  return b;
+function reveal(c) {
+  const b = built.get(c); if (!b || b.classList.contains('show')) return;
+  const own = b.cloneNode(true); own.querySelectorAll('.blk').forEach(x => x.remove());
+  textLog.push({ scene: cur, t: sceneT, words: (own.textContent.trim().match(/\S+/g) || []).length });
+  const host = b.parentElement, step = el => { el.classList.remove('cur'); el.classList.add('past'); };
+  if (host && host !== stage) { [...host.children].forEach(x => { if (x !== b && x.classList.contains('show')) step(x); }); b.classList.add('cur'); }
+  else if (b.querySelector('.closing')) stage.querySelectorAll('.cols>.blk.show').forEach(step);
+  b.classList.add('show');
 }
 const sec = s => `<p class="sec"><i class="mk fade"></i>${s}</p>`;
 const rowsOf = () => stage ? [...stage.querySelectorAll('.lr:not(.hd)')] : [];
@@ -1893,55 +1896,60 @@ const rowStrike = k => { const r = rowsOf()[k]; if (r) r.classList.add('struck')
 const rowNow = k => { const r = rowsOf()[k]; if (r) r.classList.add('done'); AU.bellAt(5 + k, .045, .3); };
 
 /* ---------- the script ---------- */
+// Text cues are data, so each scene's words can be laid out in their final places before any of them appear.
+const TX = (layout, html) => ({ t: 'txt', layout, html });
+const AD = (html, into) => ({ t: 'add', html, into });
 const S = [
   { id: 'street', lab: 'It’s late', dur: 11.5, chord: 'Dm9', arp: 1.9,
     cam: { p: [2, 3.6, 4], l: [-6, 5.6, -30], dur: 6, push: 3 },
     world: { hero: false },
     cues: [
-      [.8, () => txt('bottom', '<p class="t-lead soft">It’s late on your street.</p>')],
+      [.8, TX('bottom', '<p class="t-lead soft">It’s late on your street.</p>')],
       [3.4, () => { setWorld({ hero: true }); AU.bell(69, .1, -.3, true); AU.bell(74, .075, -.3, true, .16); }],
-      [4.8, () => add('<p class="t-st">Someone is still up, <em>making something.</em></p>')]
+      [4.8, AD('<p class="t-st">Someone is still up, <em>making something.</em></p>')]
     ] },
   { id: 'anger', lab: 'The anger', dur: 12, chord: 'Dm9', murmur: .1,
     cam: { p: [3.2, 4.4, -2], l: [-6, 5.2, -24], dur: 5, push: 4 },
     world: { words: 'hero' },
     cues: [
-      [2.4, () => txt('bottom', '<p class="t-st">And a lot of people<br>are angry about it.</p>')],
+      [2.4, TX('bottom', '<p class="t-st">And a lot of people<br>are angry about it.</p>')],
       [5.6, () => { setWorld({ aim: 'hero' }); AU.tick(.035); }]
     ] },
   { id: 'premise', lab: 'The premise', dur: 22.5, chord: 'Bbmaj7', murmur: .08, arp: 2.1,
     cam: { p: [8, 30, 60], l: [-62, 50, -320], dur: 7.5, push: 12 },
     world: { words: 'hero', aim: 'hero', scrim: .5, scrimtop: 1 },
     cues: [
-      [3, () => { txt('top', sec('The premise') + '<p class="t-st">A lot of the anger at AI is pointed at <em>the wrong people.</em></p>'); setWorld({ tags: ['neighbor', 'giant'] }); }],
+      [3, TX('top', sec('The premise') + '<p class="t-st">A lot of the anger at AI is pointed at <em>the wrong people.</em></p>')],
+      [3, () => setWorld({ tags: ['neighbor', 'giant'] })],
       [8, () => { setWorld({ words: null }); AU.murmur(0); }],
-      [9.4, () => add('<p class="t-body">Some of that anger is earned. But too much of it lands on the person with the least power in the story.</p>')],
-      [17, () => add('<p class="t-lead"><i>This is an argument about aim.</i></p>')]
+      [9.4, AD('<p class="t-body">Some of that anger is earned. But too much of it lands on the person with the least power in the story.</p>')],
+      [17, AD('<p class="t-lead"><i>This is an argument about aim.</i></p>')]
     ] },
   { id: 'moved', sec: 'I', lab: 'What moved', dur: 19.5, chord: 'Fadd9', arp: 1.7,
     cam: { p: [60, 105, 95], l: [-14, 10, -190], dur: 6, push: 16 },
     world: { warm: 0, bells: true },
     cues: [
-      [.9, () => txt('bottom', sec('I · What moved') + '<p class="t-st">AI didn’t just automate tasks.</p>')],
-      [4.8, () => { add('<p class="t-st"><em>It moved power.</em></p>'); setWorld({ warm: .14, spread: 7, stream: 1 }); AU.low(41, .14); AU.whoosh(.05, true); }],
-      [8.6, () => add('<p class="t-body">Ideas can now become real things with far less capital and far fewer people. That changes who gets to compete.</p>')],
+      [.9, TX('bottom', sec('I · What moved') + '<p class="t-st">AI didn’t just automate tasks.</p>')],
+      [4.8, AD('<p class="t-st"><em>It moved power.</em></p>')],
+      [4.8, () => { setWorld({ warm: .14, spread: 7, stream: 1 }); AU.low(41, .14); AU.whoosh(.05, true); }],
+      [8.6, AD('<p class="t-body">Ideas can now become real things with far less capital and far fewer people. That changes who gets to compete.</p>')],
       [15.5, () => setWorld({ stream: 0 })]
     ] },
   { id: 'gap', sec: 'I', lab: 'The gap', dur: 25.5, chord: 'Csus2', arp: 2.2,
     cam: { p: [0, 14, 62], l: [10, 22, -200], dur: 7, push: 7 },
     world: { warm: .14, blur: 9, bright: .45, scrim: 1 },
     cues: [
-      [.6, () => txt('center', sec('I · What moved') + '<p class="t-head">Most ideas used to die in the gap.</p>')],
-      [1.8, () => add('<div class="gap ns fade"><span class="gap-node">An idea</span><span class="gap-track"><span class="gap-line"></span><span class="obs" style="--x:14%;--k:0;--r:-14deg">Capital</span><span class="obs" style="--x:38%;--k:1;--r:9deg">A team</span><span class="obs" style="--x:62%;--k:2;--r:-6deg">Permission</span><span class="obs" style="--x:86%;--k:3;--r:16deg">Time</span></span><span class="gap-node gap-end">A real thing</span></div>')],
+      [.6, TX('center', sec('I · What moved') + '<p class="t-head">Most ideas used to die in the gap.</p>')],
+      [1.8, AD('<div class="gap ns fade"><span class="gap-node">An idea</span><span class="gap-track"><span class="gap-line"></span><span class="obs" style="--x:14%;--k:0;--r:-14deg">Capital</span><span class="obs" style="--x:38%;--k:1;--r:9deg">A team</span><span class="obs" style="--x:62%;--k:2;--r:-6deg">Permission</span><span class="obs" style="--x:86%;--k:3;--r:16deg">Time</span></span><span class="gap-node gap-end">A real thing</span></div>')],
       [7.8, () => { const g = stage && stage.querySelector('.gap'); if (g) g.classList.add('short'); [0, 1, 2, 3].forEach(k => AU.tick(.035, k * .14)); AU.bellAt(7, .08, 0, 1.3); }],
-      [10.8, () => add('<p class="t-body">Money, people, permission and time used to stand between an idea and the real thing. AI shrank that distance, and the advantage of whoever could afford to cross it.</p>')]
+      [10.8, AD('<p class="t-body">Money, people, permission and time used to stand between an idea and the real thing. AI shrank that distance, and the advantage of whoever could afford to cross it.</p>')]
     ] },
   { id: 'then-now', sec: 'I', lab: 'Then and now', dur: 27, chord: 'Gm9', arp: 2.3,
     cam: { p: [2, 18, 58], l: [-12, 18, -200], dur: 7, push: 8 },
     world: { warm: .14, blur: 9, bright: .42, scrim: 1 },
     cues: [
-      [.5, () => txt('center', sec('I · What moved') + '<p class="t-head">What it used to take, and what it takes now</p>')],
-      [1.4, () => add('<div class="ledger ns fade"><div class="lr hd"><span class="lc lk"></span><span class="lc lh">Then</span><span class="lc lh now">Now</span></div>' +
+      [.5, TX('center', sec('I · What moved') + '<p class="t-head">What it used to take, and what it takes now</p>')],
+      [1.4, AD('<div class="ledger ns fade"><div class="lr hd"><span class="lc lk"></span><span class="lc lh">Then</span><span class="lc lh now">Now</span></div>' +
         '<div class="lr pend"><span class="lc lk">Capital</span><span class="lc lt"><span>Funding before the first line of work</span></span><span class="lc ln">A laptop and a modest monthly bill</span></div>' +
         '<div class="lr pend"><span class="lc lk">People</span><span class="lc lt"><span>A designer, developer, writer, marketer</span></span><span class="lc ln">One person with a clear idea, or a few</span></div>' +
         '<div class="lr pend"><span class="lc lk">Permission</span><span class="lc lt"><span>Someone with money to say yes</span></span><span class="lc ln">Nobody’s. You can just begin.</span></div>' +
@@ -1955,67 +1963,80 @@ const S = [
     cam: { p: [0, 46, 92], l: [0, 6, -170], dur: 6, push: 14 },
     world: { warm: .14, cool: .78, coolSpread: 3.2, bells: true },
     cues: [
-      [.9, () => txt('bottom', sec('II · What’s scarce now') + '<p class="t-st">Access to tools is no longer the scarce thing.</p>')],
-      [5.4, () => { add('<p class="t-hero"><em>Vision is.</em></p>'); setWorld({ warm: .22, spread: 3 }); AU.low(46, .13); }],
-      [8.8, () => add('<p class="t-body">The ability to see something worth making, and the willingness to steer it into existence.</p>')]
+      [.9, TX('bottom', sec('II · What’s scarce now') + '<p class="t-st">Access to tools is no longer the scarce thing.</p>')],
+      [5.4, AD('<p class="t-hero"><em>Vision is.</em></p>')],
+      [5.4, () => { setWorld({ warm: .22, spread: 3 }); AU.low(46, .13); }],
+      [8.8, AD('<p class="t-body">The ability to see something worth making, and the willingness to steer it into existence.</p>')]
     ] },
   { id: 'two-parts', sec: 'II', lab: 'See and steer', dur: 26, chord: 'Fadd9', arp: 2.2,
     cam: { p: [24, 40, 70], l: [-12, 10, -200], dur: 7, push: 10 },
     world: { warm: .22, cool: .78, blur: 9, bright: .42, scrim: 1 },
     cues: [
-      [.5, () => txt('center', sec('II · What’s scarce now') + '<p class="t-head">Vision comes in two parts</p>' + '<div class="cols ns" style="--n:2"></div>')],
-      [1.8, () => { add('<div class="col"><p class="lab">01</p><p class="big">To see.</p><p class="t-body">Noticing what’s worth making before it exists: a need nobody serves, a missing tool, an untold story.</p></div>', '.cols'); AU.bellAt(4, .055, -.3); }],
-      [8.6, () => { add('<div class="col"><p class="lab">02</p><p class="big">To steer.</p><p class="t-body">Staying with it. Making the hundred small calls that turn a rough first output into what you meant.</p></div>', '.cols'); AU.bellAt(6, .055, .3); }],
-      [16.1, () => add('<p class="t-lead closing"><i>The tools can do more and more of the work. They can’t decide what’s worth doing.</i></p>')]
+      [.5, TX('center', sec('II · What’s scarce now') + '<p class="t-head">Vision comes in two parts</p>' + '<div class="cols ns" style="--n:2"></div>')],
+      [1.8, AD('<div class="col"><p class="lab">01</p><p class="big">To see.</p><p class="t-body">Noticing what’s worth making before it exists: a need nobody serves, a missing tool, an untold story.</p></div>', '.cols')],
+      [1.8, () => AU.bellAt(4, .055, -.3)],
+      [8.6, AD('<div class="col"><p class="lab">02</p><p class="big">To steer.</p><p class="t-body">Staying with it. Making the hundred small calls that turn a rough first output into what you meant.</p></div>', '.cols')],
+      [8.6, () => AU.bellAt(6, .055, .3)],
+      [16.1, AD('<p class="t-lead closing"><i>The tools can do more and more of the work. They can’t decide what’s worth doing.</i></p>')]
     ] },
   { id: 'discomfort', sec: 'III', lab: 'The discomfort', dur: 17, chord: 'Dm9', arp: 2,
     cam: { p: [0, 160, 120], l: [0, 0, -175], dur: 7, push: 18 },
     world: { warm: .22, cool: .6, bells: true },
     cues: [
-      [1, () => { txt('bottom', sec('III · The discomfort') + '<p class="t-st">For many critics, the real discomfort is <em>how widely</em> the power is now spread.</p>'); setWorld({ warm: .46, spread: 9 }); }],
-      [7.4, () => add('<p class="t-body">When something scarce becomes common, the people who used to hold it feel the change first.</p>')]
+      [1, TX('bottom', sec('III · The discomfort') + '<p class="t-st">For many critics, the real discomfort is <em>how widely</em> the power is now spread.</p>')],
+      [1, () => setWorld({ warm: .46, spread: 9 })],
+      [7.4, AD('<p class="t-body">When something scarce becomes common, the people who used to hold it feel the change first.</p>')]
     ] },
   { id: 'three', sec: 'III', lab: 'Where it comes from', dur: 33, chord: 'Gm9', arp: 2.3,
     cam: { p: [-34, 64, 90], l: [12, 10, -220], dur: 7, push: 10 },
     world: { warm: .46, cool: .6, blur: 9, bright: .42, scrim: 1 },
     cues: [
-      [.5, () => txt('center', sec('III · The discomfort') + '<p class="t-head">Where the discomfort comes from</p><div class="cols ns" style="--n:3"></div>')],
-      [1.6, () => { add('<div class="col"><p class="lab">Fear</p><p class="t-lead">Some fear the power.</p><p class="t-body">Power that used to be scarce is suddenly everywhere. That’s unsettling, especially if your position depended on the scarcity.</p></div>', '.cols'); AU.bellAt(3, .05, -.4); }],
-      [9.8, () => { add('<div class="col"><p class="lab">Know-how</p><p class="t-lead">Some don’t know how yet.</p><p class="t-body">The tools are new and the learning curve is uneven. Being outside something can feel like being pushed out of it.</p></div>', '.cols'); AU.bellAt(4, .05, 0); }],
-      [19.2, () => { add('<div class="col"><p class="lab">Possibility</p><p class="t-lead">Some don’t see it yet.</p><p class="t-body">Not for lack of ability. Nobody has shown them what one person can now make.</p></div>', '.cols'); AU.bellAt(6, .05, .4); }],
-      [26.8, () => add('<p class="t-lead closing"><i>None of these make the neighbor the problem.</i></p>')]
+      [.5, TX('center', sec('III · The discomfort') + '<p class="t-head">Where the discomfort comes from</p><div class="cols ns" style="--n:3"></div>')],
+      [1.6, AD('<div class="col"><p class="lab">Fear</p><p class="t-lead">Some fear the power.</p><p class="t-body">Power that used to be scarce is suddenly everywhere. That’s unsettling, especially if your position depended on the scarcity.</p></div>', '.cols')],
+      [1.6, () => AU.bellAt(3, .05, -.4)],
+      [9.8, AD('<div class="col"><p class="lab">Know-how</p><p class="t-lead">Some don’t know how yet.</p><p class="t-body">The tools are new and the learning curve is uneven. Being outside something can feel like being pushed out of it.</p></div>', '.cols')],
+      [9.8, () => AU.bellAt(4, .05, 0)],
+      [19.2, AD('<div class="col"><p class="lab">Possibility</p><p class="t-lead">Some don’t see it yet.</p><p class="t-body">Not for lack of ability. Nobody has shown them what one person can now make.</p></div>', '.cols')],
+      [19.2, () => AU.bellAt(6, .05, .4)],
+      [26.8, AD('<p class="t-lead closing"><i>None of these make the neighbor the problem.</i></p>')]
     ] },
   { id: 'two-uses', sec: 'IV', lab: 'Two stories', dur: 15, chord: 'Ebmaj7', drone: 1,
     cam: { p: [0, 5, -296], l: [0, 150, -470], dur: 6.5, push: 12 },
     world: { warm: .22, cool: .5, crown: .3 },
     cues: [
-      [1.6, () => txt('bottom', sec('IV · Two stories') + '<p class="t-st">A solo creator using AI to compete and a giant using AI to protect its margins <em>are not doing the same thing.</em></p>')]
+      [1.6, TX('bottom', sec('IV · Two stories') + '<p class="t-st">A solo creator using AI to compete and a giant using AI to protect its margins <em>are not doing the same thing.</em></p>')]
     ] },
   { id: 'giant', sec: 'IV', lab: 'The giant’s version', dur: 23, chord: 'Ebmaj7', drone: 1,
     cam: { p: [-40, 70, -200], l: [-96, 140, -460], dur: 6, push: 10 },
     world: { warm: .22, cool: .5, crown: .3, tower: 1, scrimleft: 1 },
     cues: [
-      [.6, () => txt('left', sec('IV · The giant’s version') + '<p class="t-head">Follow the savings</p><div class="tally ns"></div>')],
-      [2.2, () => { add('<div class="tl"><span class="tk">What it costs them to make</span><span class="tv">Down</span></div>', '.tally'); AU.tick(.035); }],
+      [.6, TX('left', sec('IV · The giant’s version') + '<p class="t-head">Follow the savings</p><div class="tally ns"></div>')],
+      [2.2, AD('<div class="tl"><span class="tk">What it costs them to make</span><span class="tv">Down</span></div>', '.tally')],
+      [2.2, () => AU.tick(.035)],
       [3.8, () => { setWorld({ tower: .86 }); AU.thud(.3); }],
-      [5.2, () => { add('<div class="tl"><span class="tk">How many people they employ</span><span class="tv">Down</span></div>', '.tally'); }],
+      [5.2, AD('<div class="tl"><span class="tk">How many people they employ</span><span class="tv">Down</span></div>', '.tally')],
       [5.6, () => { setWorld({ tower: .74 }); AU.thud(.28); }],
       [6.8, () => { setWorld({ tower: .62 }); AU.thud(.26); }],
       [8, () => { setWorld({ tower: .52 }); AU.thud(.24); }],
       [9.2, () => { setWorld({ tower: .44 }); AU.thud(.22); }],
-      [10.8, () => { add('<div class="tl"><span class="tk">What you pay</span><span class="tv"><em>The same, or more</em></span></div>', '.tally'); setWorld({ crown: 1 }); AU.tick(.05); AU.low(39, .11); }],
-      [13.8, () => add('<p class="t-body">The efficiency is real. It just doesn’t reach you, or the people who were let go.</p>')]
+      [10.8, AD('<div class="tl"><span class="tk">What you pay</span><span class="tv"><em>The same, or more</em></span></div>', '.tally')],
+      [10.8, () => { setWorld({ crown: 1 }); AU.tick(.05); AU.low(39, .11); }],
+      [13.8, AD('<p class="t-body">The efficiency is real. It just doesn’t reach you, or the people who were let go.</p>')]
     ] },
   { id: 'neighbor', sec: 'IV', lab: 'The neighbor’s version', dur: 29.5, chord: 'Bbmaj7', arp: 2.4,
     cam: { p: [-4.5, 6.4, -10], l: [-10, 7, -78], dur: 6.5, push: 4 },
     world: { warm: .1, cool: .28, tower: .44, crown: 1, extras: 0, scrimleft: 1 },
     cues: [
-      [.7, () => txt('left', sec('IV · The neighbor’s version') + '<p class="t-head">Who the neighbor actually is</p><div class="items ns"></div>')],
-      [2.2, () => { add('<div class="it"><span class="n">01</span><span>A nurse who built the scheduling tool her unit actually needed.</span></div>', '.items'); setWorld({ extras: 1, tags: ['n1'] }); AU.bell(65, .075, .4, true); }],
-      [6.6, () => { add('<div class="it"><span class="n">02</span><span>A teenager who finally finished the game they’d been sketching for years.</span></div>', '.items'); setWorld({ extras: 2, tags: ['n1', 'n2'] }); AU.bell(69, .075, .45, true); }],
-      [11, () => { add('<div class="it"><span class="n">03</span><span>A retired machinist turning forty years of know-how into a course.</span></div>', '.items'); setWorld({ extras: 3, tags: ['n1', 'n2', 'n3'] }); AU.bell(72, .075, .5, true); }],
-      [15.4, () => { add('<div class="it"><span class="n">04</span><span>A two-person studio taking on work that used to need a whole agency.</span></div>', '.items'); setWorld({ extras: 4, tags: ['n1', 'n2', 'n3', 'n4'] }); AU.bell(74, .075, .55, true); }],
-      [20.2, () => add('<p class="t-body">None of them had a big budget or a team. Each of them had a reason.</p>')]
+      [.7, TX('left', sec('IV · The neighbor’s version') + '<p class="t-head">Who the neighbor actually is</p><div class="items ns"></div>')],
+      [2.2, AD('<div class="it"><span class="n">01</span><span>A nurse who built the scheduling tool her unit actually needed.</span></div>', '.items')],
+      [2.2, () => { setWorld({ extras: 1, tags: ['n1'] }); AU.bell(65, .075, .4, true); }],
+      [6.6, AD('<div class="it"><span class="n">02</span><span>A teenager who finally finished the game they’d been sketching for years.</span></div>', '.items')],
+      [6.6, () => { setWorld({ extras: 2, tags: ['n1', 'n2'] }); AU.bell(69, .075, .45, true); }],
+      [11, AD('<div class="it"><span class="n">03</span><span>A retired machinist turning forty years of know-how into a course.</span></div>', '.items')],
+      [11, () => { setWorld({ extras: 3, tags: ['n1', 'n2', 'n3'] }); AU.bell(72, .075, .5, true); }],
+      [15.4, AD('<div class="it"><span class="n">04</span><span>A two-person studio taking on work that used to need a whole agency.</span></div>', '.items')],
+      [15.4, () => { setWorld({ extras: 4, tags: ['n1', 'n2', 'n3', 'n4'] }); AU.bell(74, .075, .55, true); }],
+      [20.2, AD('<p class="t-body">None of them had a big budget or a team. Each of them had a reason.</p>')]
     ] },
   { id: 'quote', lab: 'The line', dur: 16, chord: null,
     cam: { p: [-4, 6.9, -14], l: [-10, 7.4, -80], dur: 8 },
@@ -2023,39 +2044,46 @@ const S = [
     cues: [
       [0, () => AU.hush(1.1)],
       [1.4, () => { $('#amber').classList.add('on'); AU.unhush(.4); AU.chord('Fmaj9', { att: 1.8, gain: .11 }); AU.boom(29, .26); }],
-      [2.6, () => txt('quote', '<p class="qmark ns fade">“</p><p class="t-st">Hate the giant that cuts jobs while raising prices.</p>')],
-      [7.4, () => { add('<p class="t-st"><em>Don’t hate the neighbor who finally gets to ship something.</em></p>'); AU.bell(77, .08, 0, true); AU.bell(81, .05, .2, true, .22); }]
+      [2.6, TX('quote', '<p class="qmark ns fade">“</p><p class="t-st">Hate the giant that cuts jobs while raising prices.</p>')],
+      [7.4, AD('<p class="t-st"><em>Don’t hate the neighbor who finally gets to ship something.</em></p>')],
+      [7.4, () => { AU.bell(77, .08, 0, true); AU.bell(81, .05, .2, true, .22); }]
     ] },
   { id: 'creativity', sec: 'V', lab: 'Where it belongs', dur: 17.6, chord: 'Dm9', drone: .35, arp: 2.2,
     cam: { p: [0, 10, 28], l: [0, 46, -400], dur: 6, push: 9 },
     world: { warm: .2, cool: .3, tower: .44, crown: 1, extras: 4, aim: 'hero' },
     cues: [
-      [1, () => txt('bottom', sec('V · Where it belongs') + '<p class="t-st">Creativity is not the problem.</p>')],
-      [4.4, () => { add('<p class="t-st"><em>Misdirected anger is. So is gatekeeping.</em></p>'); setWorld({ aim: 'tower', tags: ['giant'] }); AU.whoosh(.06, true); AU.low(38, .12); }],
+      [1, TX('bottom', sec('V · Where it belongs') + '<p class="t-st">Creativity is not the problem.</p>')],
+      [4.4, AD('<p class="t-st"><em>Misdirected anger is. So is gatekeeping.</em></p>')],
+      [4.4, () => { setWorld({ aim: 'tower', tags: ['giant'] }); AU.whoosh(.06, true); AU.low(38, .12); }],
       [6.4, () => { setWorld({ words: 'tower' }); AU.murmur(.045); }],
-      [9.6, () => add('<p class="t-body">People have always wanted to make things. Now more of them can.</p>')]
+      [9.6, AD('<p class="t-body">People have always wanted to make things. Now more of them can.</p>')]
     ] },
   { id: 'questions', sec: 'V', lab: 'Better questions', dur: 28, chord: 'Gm9', drone: .35,
     cam: { p: [-30, 62, -170], l: [-84, 124, -460], dur: 6.5, push: 10 },
     world: { warm: .2, cool: .3, tower: .44, crown: 1, extras: 4, aim: 'tower', scrimleft: 1 },
     cues: [
-      [.6, () => txt('left', sec('V · Where it belongs') + '<p class="t-head">Aim the hard questions where the power is</p>')],
-      [2.2, () => add('<p class="t-body">AI raises real questions about jobs, credit, consent and who benefits. They deserve serious answers. Ask them of the people who can actually give them.</p><div class="items ns"></div>')],
-      [10.8, () => { add('<div class="it"><span class="n">01</span><span>Who kept the savings when the work got cheaper?</span></div>', '.items'); AU.low(43, .11); }],
-      [14.3, () => { add('<div class="it"><span class="n">02</span><span>Did prices fall when costs did?</span></div>', '.items'); AU.low(46, .11); }],
-      [17.8, () => { add('<div class="it"><span class="n">03</span><span>Who was let go, and what were they offered?</span></div>', '.items'); AU.low(41, .11); }],
-      [21.3, () => { add('<div class="it"><span class="n">04</span><span>Who is being told they aren’t allowed to make things?</span></div>', '.items'); AU.low(38, .12); }]
+      [.6, TX('left', sec('V · Where it belongs') + '<p class="t-head">Aim the hard questions where the power is</p>')],
+      [2.2, AD('<p class="t-body">AI raises real questions about jobs, credit, consent and who benefits. They deserve serious answers. Ask them of the people who can actually give them.</p><div class="items ns"></div>')],
+      [10.8, AD('<div class="it"><span class="n">01</span><span>Who kept the savings when the work got cheaper?</span></div>', '.items')],
+      [10.8, () => AU.low(43, .11)],
+      [14.3, AD('<div class="it"><span class="n">02</span><span>Did prices fall when costs did?</span></div>', '.items')],
+      [14.3, () => AU.low(46, .11)],
+      [17.8, AD('<div class="it"><span class="n">03</span><span>Who was let go, and what were they offered?</span></div>', '.items')],
+      [17.8, () => AU.low(41, .11)],
+      [21.3, AD('<div class="it"><span class="n">04</span><span>Who is being told they aren’t allowed to make things?</span></div>', '.items')],
+      [21.3, () => AU.low(38, .12)]
     ] },
   { id: 'closer', lab: 'Your neighbor', dur: 28, chord: 'Dmaj9', end: true, arp: 1.5,
     cam: { p: [0, 46, 74], l: [0, 6, -210], dur: 5 },
     world: { warm: .2, cool: .25, tower: .44, crown: 1, extras: 4, bells: true },
     cues: [
       [.2, () => setWorld({ warm: .64, spread: 15 })],
-      [2, () => txt('bottom', '<p class="t-lead soft" style="max-width:30ch">Somewhere on your street, a light is on late. Someone is finally making the thing they always talked about.</p>')],
+      [2, TX('bottom', '<p class="t-lead soft" style="max-width:30ch">Somewhere on your street, a light is on late. Someone is finally making the thing they always talked about.</p>')],
       [4.5, () => camSet([0, 132, 176], [0, 0, -230], 22)],
-      [10.2, () => add('<p class="t-st">That’s not the enemy.</p>')],
-      [13.2, () => { add('<p class="t-st"><em>That’s your neighbor.</em></p>'); AU.boom(26, .22); }],
-      [21, () => add('<div class="end ns fade"><p>The Neighbor Is Not the Enemy</p><button class="btn" type="button" data-act="replay">Watch again</button></div>')]
+      [10.2, AD('<p class="t-st">That’s not the enemy.</p>')],
+      [13.2, AD('<p class="t-st"><em>That’s your neighbor.</em></p>')],
+      [13.2, () => AU.boom(26, .22)],
+      [21, AD('<div class="end ns fade"><p>The Neighbor Is Not the Enemy</p><button class="btn" type="button" data-act="replay">Watch again</button></div>')]
     ] }
 ];
 S.forEach(s => s.cues.sort((a, b) => a[0] - b[0]));
@@ -2078,7 +2106,7 @@ function go(i) {
   if (i < 0 || i >= S.length) return;
   const s = S[i];
   cur = i; sceneT = -.6; fired = 0; arpT = 1.2;
-  clearText();
+  buildScene(s);
   if (s.id !== 'quote') $('#amber').classList.remove('on');
   setWorld(Object.assign({}, s.world), true);
   camSet(s.cam.p, s.cam.l, s.cam.dur, -.6, s.cam.push || 0, s.dur - s.cam.dur);
@@ -2095,7 +2123,7 @@ function go(i) {
 }
 function fireUntil(t) {
   const s = S[cur]; if (!s) return;
-  while (fired < s.cues.length && s.cues[fired][0] <= t) { const c = s.cues[fired++]; try { c[1](); } catch (e) { console.error(e); } }
+  while (fired < s.cues.length && s.cues[fired][0] <= t) { const c = s.cues[fired++]; try { if (typeof c[1] === 'function') c[1](); else reveal(c); } catch (e) { console.error(e); } }
 }
 function next() {
   if (!started) return;
